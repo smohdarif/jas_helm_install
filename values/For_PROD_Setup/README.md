@@ -481,26 +481,33 @@ cd /opt/jfrog/xray/var/log
 cat /opt/jfrog/xray/var/log/xray-server-service.log
 tail -F /opt/jfrog/xray/var/log/xray-server-service.log
 ```
+---
+**Enable JAS**
 
+If xray is up and is now integrated with Artifactory , next  enable JAS in the values.yaml:
 
-```
-
-
-If xray is up and is now integrated with Artifactory , next  enable JAS :
-Posted to https://jfrog.slack.com/archives/C05D73HSANA/p1689029408495669
 ```
 python yaml-merger.py tmp/8_mergedfile.yaml 9_enable_JAS.yaml > tmp/9_mergedfile.yaml
 ```
+
+Next do the helm upgrade to install / enable JAS:
+```text
 helm  upgrade --install $MY_HELM_RELEASE \
 -f tmp/9_mergedfile.yaml \
 --namespace $MY_NAMESPACE jfrog/jfrog-platform  \
 --set gaUpgradeReady=true \
 --set global.jfrogUrlUI="http://104.196.98.19" \
 --dry-run
+```
 
 ---
 
-$watch kubectl get pods  -n $MY_NAMESPACE
+Note: JAS runs as a k8s job , so you will see the pods from the job only when you "Scan for Contextual Analysis".
+At that time when you run the following ti will show the pods that are running for the job.
+```text
+watch kubectl get pods  -n $MY_NAMESPACE
+```
+
 
 ----
 
