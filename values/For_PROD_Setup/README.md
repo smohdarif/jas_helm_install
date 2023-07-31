@@ -4,14 +4,17 @@ and order of items from
 https://github.com/Aref-Riant/yaml-merger-py
 
 Requirements:
+```text
 pip install ruamel.yaml
 pip install mergedeep
+```
+
 usage:
 ```
 python yaml-merger.py file1.yaml file2.yaml > mergedfile.yaml
 ```
 ---
-
+After you download this got repo do:
 ```text
 cd values/For_PROD_Setup
 ```
