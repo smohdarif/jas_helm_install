@@ -448,6 +448,43 @@ helm  upgrade --install $MY_HELM_RELEASE \
 --set global.jfrogUrlUI="http://104.196.98.19" 
 ```
 
+Verify using:
+```text
+$kubectl logs $MY_HELM_RELEASE-rabbitmq-0 -n $MY_NAMESPACE
+
+kubectl exec -it $MY_HELM_RELEASE-rabbitmq-0  -n $MY_NAMESPACE -- bash
+find / -name rabbitmq.conf
+cat /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+
+rabbitmqctl status
+rabbitmqctl cluster_status
+rabbitmqctl list_queues
+
+SSH to the rabbitmq pod and run below curl command:
+Note: the default admin password for rabbitMQ is password but we did override it to Test@123 as mentioned above:
+
+curl --user admin:Test@123 http://localhost:15672/api/vhosts
+curl --user admin:Test@123 "http://jfrog-platform-rabbitmq:15672"
+```
+
+SSH to the Xray server
+```text
+kubectl exec -it $MY_HELM_RELEASE-xray-0 -n $MY_NAMESPACE -c xray-server -- bash
+Example:
+kubectl exec -it $MY_HELM_RELEASE-xray-0 -n $MY_NAMESPACE -c xray-server -- bash
+
+cd /opt/jfrog/xray/var/etc
+cat /opt/jfrog/xray/var/etc/system.yaml
+
+
+cd /opt/jfrog/xray/var/log
+cat /opt/jfrog/xray/var/log/xray-server-service.log
+tail -F /opt/jfrog/xray/var/log/xray-server-service.log
+```
+
+
+```
+
 
 If xray is up and is now integrated with Artifactory , next  enable JAS :
 Posted to https://jfrog.slack.com/archives/C05D73HSANA/p1689029408495669
