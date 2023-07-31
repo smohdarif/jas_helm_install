@@ -15,9 +15,20 @@ python yaml-merger.py file1.yaml file2.yaml > mergedfile.yaml
 ```text
 cd values/For_PROD_Setup
 ```
+Instead of installing Artifactory, Xray and JAS all in one shot, it is recommended to :
+a) first install  Artifactory , login to it and set the base url
+b) install Xray and verifuy it successfully connects to the Artifactory instance
+c) Do Xray DB Sync
+d) Then enable JAS
 
-Next set the following Environmental variables based on your Deployment K8s environment where you will install the 
+The steps to do the above are explained in this Readme. 
+You can also review the blog [A Guide to Installing the JFrog Platform on Amazon EKS](https://jfrog.com/blog/install-artifactory-on-eks/) 
+that outlines the  prerequisites and steps required to install and configure the JFrog Platform in Amazon EKS, 
+including setting up two AWS systems: IAM Roles for Service Accounts (IRSA) and Application Load Balancer (ALB).
+
+Set the following Environmental variables based on your Deployment K8s environment where you will install the 
 JFrog Platform.
+
 Note: the CLOUD_PROVIDER can be gcp or aws ( JFrog Helm charts support Azure as well but this readme was created 
 only based on gcp or aws  )
 
