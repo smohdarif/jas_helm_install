@@ -20,8 +20,9 @@ cd values/For_PROD_Setup
 ```
 Instead of installing Artifactory, Xray and JAS all in one shot, it is recommended to :
 ```text
-a) first install  Artifactory , login to it and set the base url
-b) install Xray and verifuy it successfully connects to the Artifactory instance
+a) Create  the secrets ( for all user passwords, binarystore configuration , system.yaml etc) 
+a) first install  Artifactory , login to it and set the Artifactory base url
+b) install Xray and verify it successfully connects to the Artifactory instance
 c) Do Xray DB Sync
 d) Then enable JAS
 ```
