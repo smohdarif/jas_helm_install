@@ -1,5 +1,5 @@
 
-Instead of installing Artifactory, Xray and JAS all in one shot, it is recommended to :
+Instead of installing Artifactory, Xray and JAS all in one shot (in AWS EKS or in GKE ), it is recommended to :
 ```text
 a) Create  the secrets ( for all user passwords, binarystore configuration , system.yaml etc) 
 b) first install  Artifactory , login to it and set the Artifactory base url
