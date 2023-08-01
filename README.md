@@ -85,7 +85,7 @@ export XRAY_DB=xray
 ```
 ---
 
-Prepare the K8s environment:
+**Prepare the K8s environment:**
 
 **Note:** These commands will be useful if you want to iterate run the helm release multiple times i.e  you are not 
 starting with a clean k8s environment
@@ -125,9 +125,9 @@ kubectl delete ns  $MY_NAMESPACE
 
 ---
 
-If you are starting with a clean k8s environment:
+**Otherwise, if you are starting with a clean k8s environment:**
 
-Create Namespace:
+Create the Namespace:
 ```
 kubectl create ns  $MY_NAMESPACE
 ```
@@ -170,7 +170,7 @@ kubectl create secret generic artifactory-license \
 
 ---
 
-Below steps outline the above mentioned step-by-step approach to improvise the values.yaml  you will finally use:
+**Below steps outline the above mentioned step-by-step approach to improvise the values.yaml  you will finally use:**
 
 Ref: https://github.com/jfrog/charts/blob/master/stable/artifactory/values-large.yaml
 
@@ -284,7 +284,7 @@ or
 python yaml-merger.py tmp/3_mergedfile.yaml 6_xray_db_passwords_pod_size-values-large.yaml > tmp/6_mergedfile.yaml
 ```
 
-7. Rabbitmq configuration:
+7. **Rabbitmq configuration:**
 
 Search "memoryHighWatermark" and found new setting "vm_memory_high_watermark_absolute" that is not in
 https://github.com/jfrog/charts/blob/master/stable/xray/values-large.yaml
@@ -395,7 +395,7 @@ python yaml-merger.py tmp/6_mergedfile.yaml 7_rabbitmq_enabled_external_values-l
 ```
 ---
 
-Now start deploying the helm release to install the JFrog Products starting with Artifactory:
+**Now start deploying the helm release to install the JFrog Products starting with Artifactory:**
 
 First do a  Dry run:
 ```text
@@ -497,7 +497,9 @@ helm  upgrade --install $MY_HELM_RELEASE \
 --set global.jfrogUrlUI="http://104.196.98.19" 
 ```
 
-Verify using:
+**Verify:**
+
+SSH and verify rabbitMQ is up and functional:
 ```text
 $kubectl logs $MY_HELM_RELEASE-rabbitmq-0 -n $MY_NAMESPACE
 
@@ -516,7 +518,7 @@ curl --user admin:Test@123 http://localhost:15672/api/vhosts
 curl --user admin:Test@123 "http://jfrog-platform-rabbitmq:15672"
 ```
 
-SSH to the Xray server
+SSH and verify the Xray server is up and functional
 ```text
 kubectl exec -it $MY_HELM_RELEASE-xray-0 -n $MY_NAMESPACE -c xray-server -- bash
 Example:
