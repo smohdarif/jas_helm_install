@@ -31,7 +31,9 @@ The steps to do the above are explained in this Readme.
 
 You can also review the blog - [A Guide to Installing the JFrog Platform on Amazon EKS](https://jfrog.com/blog/install-artifactory-on-eks/) 
 , that outlines the  prerequisites and steps required to install and configure the JFrog Platform in Amazon EKS, 
-including setting up two AWS systems: IAM Roles for Service Accounts (IRSA) and Application Load Balancer (ALB).
+including setting up two AWS systems: 
+- IAM Roles for Service Accounts (IRSA) and 
+- Application Load Balancer (ALB).
 
 Set the following Environmental variables based on your Deployment K8s environment where you will install the 
 JFrog Platform.
