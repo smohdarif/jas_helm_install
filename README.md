@@ -461,7 +461,7 @@ In  https://github.com/jfrog/charts/blob/4ba461c93ece4b736db84954982cf4e7ec54f8e
 ```
 I posted this to  https://jfrog.slack.com/archives/CD30SKMDG/p1690306078218199 and logged INST-6705
 
-To **workaround** this I exported the xray system.yaml  to [8_xray_system_yaml.yaml](8_xray_system_yaml.yaml).
+To **workaround** this I exported the xray system.yaml  to [8_xray_system_yaml.yaml](values/For_PROD_Setup/8_xray_system_yaml.yaml).
 Set the shared.rabbitMq.password to using the correct "clear_text_admin_password_for_rabbitmq" .
 Then create the secret:
 
