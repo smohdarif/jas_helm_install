@@ -16,6 +16,13 @@ It also shows :
 - the step-by-step approach to improvise the values.yaml using the yaml-merger-py script and and to get to 
 the final values.yaml
 
+You can also review the blog - [A Guide to Installing the JFrog Platform on Amazon EKS](https://jfrog.com/blog/install-artifactory-on-eks/)
+, that outlines the  prerequisites and steps required to install and configure the JFrog Platform in Amazon EKS,
+including setting up two AWS systems:
+- IAM Roles for Service Accounts (IRSA) and
+- Application Load Balancer (ALB).
+
+---
 Please download the  python script to merge values.yaml files with best effort to preserve comments, formatting,
 and order of items from https://github.com/Aref-Riant/yaml-merger-py
 
@@ -35,11 +42,7 @@ After you download this git repo do:
 cd values/For_PROD_Setup
 ```
 
-You can also review the blog - [A Guide to Installing the JFrog Platform on Amazon EKS](https://jfrog.com/blog/install-artifactory-on-eks/) 
-, that outlines the  prerequisites and steps required to install and configure the JFrog Platform in Amazon EKS, 
-including setting up two AWS systems: 
-- IAM Roles for Service Accounts (IRSA) and 
-- Application Load Balancer (ALB).
+---
 
 Set the following Environmental variables based on your Deployment K8s environment where you will install the 
 JFrog Platform.
