@@ -14,17 +14,20 @@ usage:
 python yaml-merger.py file1.yaml file2.yaml > mergedfile.yaml
 ```
 ---
-After you download this got repo do:
+After you download this git repo do:
 ```text
 cd values/For_PROD_Setup
 ```
 Instead of installing Artifactory, Xray and JAS all in one shot, it is recommended to :
+```text
 a) first install  Artifactory , login to it and set the base url
 b) install Xray and verifuy it successfully connects to the Artifactory instance
 c) Do Xray DB Sync
 d) Then enable JAS
+```
 
 The steps to do the above are explained in this Readme. 
+
 You can also review the blog - [A Guide to Installing the JFrog Platform on Amazon EKS](https://jfrog.com/blog/install-artifactory-on-eks/) 
 , that outlines the  prerequisites and steps required to install and configure the JFrog Platform in Amazon EKS, 
 including setting up two AWS systems: IAM Roles for Service Accounts (IRSA) and Application Load Balancer (ALB).
@@ -32,7 +35,7 @@ including setting up two AWS systems: IAM Roles for Service Accounts (IRSA) and 
 Set the following Environmental variables based on your Deployment K8s environment where you will install the 
 JFrog Platform.
 
-Note: the CLOUD_PROVIDER can be gcp or aws ( JFrog Helm charts support Azure as well but this readme was created 
+**Note:** the CLOUD_PROVIDER can be gcp or aws ( JFrog Helm charts support Azure as well but this readme was created 
 only based on gcp or aws  )
 
 **Environment variables:**
@@ -71,14 +74,16 @@ export XRAY_DB=xray
 ---
 
 Prepare the K8s environment:
-Note: These commands will be useful if you want to iterate run the helm release multiple times i.e  you are not 
+
+**Note:** These commands will be useful if you want to iterate run the helm release multiple times i.e  you are not 
 starting with a clean k8s environment
 ```text
-helm uninstall $MY_HELM_RELEASE --namespace
+helm uninstall $MY_HELM_RELEASE -n $MY_NAMESPACE
+
 or to rollback a revision:
+
 helm rollback $MY_HELM_RELEASE REVISION_NUMBER -n $MY_NAMESPACE
 ```
-
 
 To get the release name of a Helm chart, you can use the following command:
 ```text
@@ -89,6 +94,7 @@ ps-jfrog-platform-release	ps-jfrog-platform	3       	2023-07-10 12:33:19.393492 
 ```
 
 Replace <namespace> with the actual namespace where the Helm release is deployed. 
+
 If you don't specify the --namespace flag, it will list releases across all namespaces.
 
 
@@ -127,6 +133,7 @@ kubectl create secret generic joinkey-secret --from-literal=join-key=${JOIN_KEY}
 ```
 
 **License:**
+
 Create a secret for license with the dataKey as "artifactory.lic" for HA or standalone ( if you want you can name the 
 dataKey as artifactory.cluster.license for HA but not necessary) :
 ```text
@@ -151,10 +158,12 @@ kubectl create secret generic artifactory-license \
 
 ---
 
-Now construct the value.yaml you will finally use:
+Below steps outline the above mentioned step-by-step approach to improvise the values.yaml  you will finally use:
 
 Ref: https://github.com/jfrog/charts/blob/master/stable/artifactory/values-large.yaml
+
 File mentioned below are in [For_PROD_Setup](values/For_PROD_Setup)
+
 1. Start with the 1_artifactory-values-small.yaml for TEST environment or 1_artifactory-values-large.yaml for PROD 
    environment
 
@@ -167,7 +176,8 @@ python yaml-merger.py 0_values-dynata-artifactory-xray-platform_prod_$CLOUD_PROV
 ---
 
 2. Override using the 2_artifactory_db_passwords.yaml
-   **Artifactory Database Credentials:**
+
+**Artifactory Database Credentials:**
 ```text
 kubectl delete secret  artifactory-database-creds  -n $MY_NAMESPACE
 
@@ -185,6 +195,9 @@ python yaml-merger.py tmp/1_mergedfile.yaml 2_artifactory_db_passwords.yaml > tm
 3. Override using 3_artifactory_admin_user.yaml 
 
 **The artifactory default admin user secret:**
+
+Review KB
+
 https://jfrog.com/help/r/artifactory-how-to-unlock-a-user-s-who-is-locked-out-of-artifactory-and-recover-admin-account/non-admin-user-recovery
 
 ```text
@@ -199,13 +212,15 @@ python yaml-merger.py tmp/2_mergedfile.yaml 3_artifactory_admin_user.yaml > tmp/
 ---
 
 4. Override the binaryStore
-With AWS https://jfrog.com/help/r/jfrog-installation-setup-documentation/s3-direct-upload-template-recommended :
+
+For AWS https://jfrog.com/help/r/jfrog-installation-setup-documentation/s3-direct-upload-template-recommended :
 ```
 kubectl apply -f 4_custom-binarystore-s3-direct-use_instance-creds.yaml -n $MY_NAMESPACE
 ```
 or
 
-With GCP ( google-storage-v2-direct template configuration from https://jfrog.com/help/r/jfrog-installation-setup-documentation/google-storage-binary-provider-native-client-template ):
+For GCP ( google-storage-v2-direct template configuration from https://jfrog.com/help/r/jfrog-installation-setup-documentation/google-storage-binary-provider-native-client-template ):
+
 ```
 kubectl delete secret  artifactory-gcp-creds -n $MY_NAMESPACE
 
@@ -220,6 +235,7 @@ kubectl apply -f binarystore_config/custom-binarystore.yaml -n $MY_NAMESPACE
 
 5.  Override the system.yaml using either 5_artifactory_system_small.yaml for TEST environment or 
     5_artifactory_system_large.yaml for PROD
+
 See  https://jfrog.com/help/r/how-do-i-tune-artifactory-for-heavy-loads/how-do-i-tune-artifactory-for-heavy-loads
  
 ```
@@ -256,7 +272,7 @@ or
 python yaml-merger.py tmp/3_mergedfile.yaml 6_xray_db_passwords_pod_size-values-large.yaml > tmp/6_mergedfile.yaml
 ```
 
-7.Rabbitmq
+7. Rabbitmq configuration:
 
 Search "memoryHighWatermark" and found new setting "vm_memory_high_watermark_absolute" that is not in
 https://github.com/jfrog/charts/blob/master/stable/xray/values-large.yaml
@@ -269,7 +285,9 @@ https://github.com/bitnami/charts/blob/5492c138a533177ebf1dc660ad19eb18b96f39ba/
 
 
 Rabbitmq is anyway external but maintained by JFrog Platform chart :
+
 From [#249001](https://groups.google.com/a/jfrog.com/g/support-followup/c/STPhVtUGzW4/m/nzIPInHOAAAJ)
+
 You can pass the rabbitmq username , password , url as a secret by creating a secret as below:
 ```
 kubectl delete secret xray-rabbitmq-creds -n $MY_NAMESPACE
@@ -299,15 +317,16 @@ kubectl create secret generic $MY_HELM_RELEASE-load-definition \
 kubectl get secret $MY_HELM_RELEASE-load-definition -n $MY_NAMESPACE -o json | jq '.data | map_values(@base64d)'
 ```
 
-Note: If you already deployed rabbitmq from a previous Xray install you can get the  pod yal definition using:
+**Note:** If you already deployed rabbitmq from a previous Xray install you can get the  pod yal definition using:
 ```text
 kubectl get pod $MY_HELM_RELEASE-rabbitmq-0 -n $MY_NAMESPACE -o yaml > ps-jfrog-platform-release-rabbitmq-0.yaml
 ```
 
-We  want to override the rabbitmq admin user to admin ( instead of guest) and
+We  want to override the rabbitmq admin user to admin ( instead of guest as the username) and
 password (default is password) :
 https://github.com/jfrog/charts/blob/b8a04c8f57f7b87d1895cd455fa4859de5db9db2/stable/xray/values.yaml#L484:
-Ticket 256917 .
+
+Ref: 256917 .
 ```text
 rabbitmq:
   auth:
@@ -315,9 +334,9 @@ rabbitmq:
     password: password
 ```
 
-by setting the rabbitMQ admin credentials by setting the **existingPasswordSecret** in the helm values.yaml as
-mentioned in the comment in snippet below ?
-https://jfrog.slack.com/archives/CD30SKMDG/p1686040418572439?thread_ts=1683027138.354849&cid=CD30SKMDG
+The rabbitMQ admin credentials can be set using the **existingPasswordSecret** in the helm values.yaml as
+mentioned in the comment in snippet below :
+SOme discussion on this in https://jfrog.slack.com/archives/CD30SKMDG/p1686040418572439?thread_ts=1683027138.354849&cid=CD30SKMDG
 ~~~
 rabbitmq:
   enabled: true
@@ -337,6 +356,7 @@ rabbitmq:
     # existingPasswordSecret: <name-of-existing-secret>
 ~~~~
 To do this :
+
 a) **Create the rabbitmq-admin-creds:**
 ```text
 kubectl delete secret rabbitmq-admin-creds -n $MY_NAMESPACE 
@@ -352,9 +372,10 @@ b) Override with the 7_rabbitmq_enabled_external_values-small.yaml ( for TEST) o
 7_rabbitmq_enabled_external_values-large.yaml ( for PROD) to use the rabbitmq-admin-creds to set the rabbitmq admin 
 password.
 
-Note: Even in PROD currently you need to use replicaCount = 1 for the rabbitmq pod because
+**Note:** Even in PROD currently you need to use replicaCount = 1 for the rabbitmq pod because
 Rabbitmq in HA mode is not fully supported by Xray product and we have  open JIRA
-[XRAY-16820](https://jfrog-int.atlassian.net/browse/XRAY-16820) . See https://jfrog.slack.com/archives/CD30SKMDG/p1688621345420649?thread_ts=1688614562.639429&cid=CD30SKMDG
+[XRAY-16820](https://jfrog-int.atlassian.net/browse/XRAY-16820) . 
+See https://jfrog.slack.com/archives/CD30SKMDG/p1688621345420649?thread_ts=1688614562.639429&cid=CD30SKMDG
 ```
 python yaml-merger.py tmp/6_mergedfile.yaml 7_rabbitmq_enabled_external_values-small.yaml > tmp/7_mergedfile.yaml
 or
@@ -408,6 +429,7 @@ For me it was 104.196.98.19 .
 ---
 
 Next install xray . 
+
 If you have ALB use that instead of nginx in "--set global.jfrogUrlUI" in below command
 ```text
 helm  upgrade --install $MY_HELM_RELEASE \
@@ -418,6 +440,7 @@ helm  upgrade --install $MY_HELM_RELEASE \
 ```
 
 ---
+
 If Xray is not connecting to Rabbitmq and you see   following errors in the xray logs:
 ```
 2023-07-23 18:58:25.284035+00:00 [error] <0.28993.9> PLAIN login refused: user 'admin' - invalid credentials
@@ -498,7 +521,8 @@ tail -F /opt/jfrog/xray/var/log/xray-server-service.log
 ---
 **Enable JAS**
 
-If xray is up and is now integrated with Artifactory , next  enable JAS in the values.yaml:
+If xray is up and is now integrated with Artifactory , you can perform the Xray DBSync.
+After that enable JAS in the helm values.yaml:
 
 ```
 python yaml-merger.py tmp/8_mergedfile.yaml 9_enable_JAS.yaml > tmp/9_mergedfile.yaml
@@ -517,7 +541,7 @@ helm  upgrade --install $MY_HELM_RELEASE \
 ---
 
 Note: JAS runs as a k8s job , so you will see the pods from the job only when you "Scan for Contextual Analysis".
-At that time when you run the following ti will show the pods that are running for the job.
+At that time when you run the following , it will show the pods that are running for the job.
 ```text
 watch kubectl get pods  -n $MY_NAMESPACE
 ```
