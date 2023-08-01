@@ -13,8 +13,8 @@ The steps to do the above are explained in this Readme.
 It also shows :
 - how to use the [envsubst](https://www.gnu.org/software/gettext/manual/html_node/envsubst-Invocation.html) command 
   to get the values to create the  secrets from environmental variables. 
-- the step-by-step approach to improvise the values.yaml using the yaml-merger-py script and and to get to 
-the final values.yaml
+- the step-by-step approach to improvise the values.yaml using the [yaml-merger-py](https://github.com/Aref-Riant/yaml-merger-py) 
+  to generate the final values.yaml needed for the helm install.
 
 You can also review the blog - [A Guide to Installing the JFrog Platform on Amazon EKS](https://jfrog.com/blog/install-artifactory-on-eks/)
 , that outlines the  prerequisites and steps required to install and configure the JFrog Platform in Amazon EKS,
