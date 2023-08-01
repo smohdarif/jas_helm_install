@@ -1,7 +1,23 @@
-Please download the  python script to merge values.yaml files with best effort to preserve comments, formatting, 
-and order of items from 
 
-https://github.com/Aref-Riant/yaml-merger-py
+Instead of installing Artifactory, Xray and JAS all in one shot, it is recommended to :
+```text
+a) Create  the secrets ( for all user passwords, binarystore configuration , system.yaml etc) 
+b) first install  Artifactory , login to it and set the Artifactory base url
+c) install Xray and verify it successfully connects to the Artifactory instance
+d) Do Xray DB Sync
+e) Then enable JAS
+```
+
+The steps to do the above are explained in this Readme. 
+
+It also shows :
+- how to use the [envsubst](https://www.gnu.org/software/gettext/manual/html_node/envsubst-Invocation.html) command 
+  to get the values to create the  secrets from environmental variables. 
+- the step-by-step approach to improvise the values.yaml using the yaml-merger-py script and and to get to 
+the final values.yaml
+
+Please download the  python script to merge values.yaml files with best effort to preserve comments, formatting,
+and order of items from https://github.com/Aref-Riant/yaml-merger-py
 
 Requirements:
 ```text
@@ -18,16 +34,6 @@ After you download this git repo do:
 ```text
 cd values/For_PROD_Setup
 ```
-Instead of installing Artifactory, Xray and JAS all in one shot, it is recommended to :
-```text
-a) Create  the secrets ( for all user passwords, binarystore configuration , system.yaml etc) 
-b) first install  Artifactory , login to it and set the Artifactory base url
-c) install Xray and verify it successfully connects to the Artifactory instance
-d) Do Xray DB Sync
-e) Then enable JAS
-```
-
-The steps to do the above are explained in this Readme. 
 
 You can also review the blog - [A Guide to Installing the JFrog Platform on Amazon EKS](https://jfrog.com/blog/install-artifactory-on-eks/) 
 , that outlines the  prerequisites and steps required to install and configure the JFrog Platform in Amazon EKS, 
