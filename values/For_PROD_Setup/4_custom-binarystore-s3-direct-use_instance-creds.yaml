@@ -15,7 +15,7 @@ stringData:
           <region>eu-west-1</region>
           <bucketName>dynata-jfrog-artifactory-dev</bucketName>
           <path>artifactory</path>
-          <endpoint>s3-us-east-1.amazonaws.com</endpoint>
+          <endpoint>s3.us-east-1.amazonaws.com</endpoint>
           <useInstanceCredentials>true</useInstanceCredentials>
           <usePresigning>false</usePresigning>
           <maxConnections>200</maxConnections>
