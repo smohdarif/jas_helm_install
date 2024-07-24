@@ -679,4 +679,99 @@ watch kubectl get pods  -n $MY_NAMESPACE
 
 
 ----
+How to set the artifactory's artifactory.artifactory.replicaCount to 1 ?
+
+To edit the replica count of a StatefulSet in Kubernetes there are multiple options:
+**Option1:** 
+You can directly  update its manifest file and then apply the 
+changes using `kubectl apply`.
+
+Here's how you can do it:
+
+1. Get the current StatefulSet manifest:
+
+   Run the following command to get the YAML representation of the StatefulSet:
+
+   ```sh
+   kubectl get statefulset jfrog-platform-artifactory -o yaml > statefulset.yaml
+   ```
+
+2. Edit the manifest:
+
+   Open the `statefulset.yaml` file in a text editor of your choice. Find the `spec.replicas` field in the YAML and change the value from `3` to `1`. It should look something like this:
+
+   ```yaml
+   apiVersion: apps/v1
+   kind: StatefulSet
+   metadata:
+     name: jfrog-platform-artifactory
+   spec:
+     replicas: 1
+     # ... other fields ...
+   ```
+
+3. Apply the changes:
+
+   Apply the edited manifest back to the cluster using `kubectl apply`:
+
+   ```sh
+   kubectl apply -f statefulset.yaml
+   ```
+
+This will update the StatefulSet with the new replica count. The StatefulSet controller will handle the scaling process, ensuring that the desired state matches the updated manifest.
+
+Option2:
+Yes, you can definitely reduce the replicas of a StatefulSet managed by Helm. Helm is a package manager for Kubernetes that allows you to define, install, and manage applications as Helm charts.
+
+Here's how you can modify the replica count of a StatefulSet deployed via Helm:
+
+1. **Get Values from Existing Release (Optional)**:
+
+   If you want to change a value in a Helm chart, it's often good practice to copy the relevant values from the release. Run the following command to get the values used in your existing release:
+
+   ```sh
+   helm get values <release-name> > my-values.yaml
+   ```
+
+   Replace `<release-name>` with the name of your Helm release. This will create a `my-values.yaml` file with the values that were used during the deployment.
+
+2. **Edit the Values File**:
+
+   Open the `my-values.yaml` file in a text editor. Look for the section related to the StatefulSet you want to modify. There should be a field like `replicaCount`, or a field specifying the replica count for that StatefulSet. Change the value from `3` to `1`.
+
+   ```yaml
+   statefulset:
+     replicaCount: 1
+     # ... other values ...
+   ```
+
+3. **Update the Release**:
+
+   Run the following command to upgrade the Helm release with the modified values:
+
+   ```sh
+   helm upgrade <release-name> <chart-name> -f my-values.yaml
+   ```
+
+   Replace `<release-name>` with the name of your Helm release and `<chart-name>` with the name of the Helm chart. The `-f my-values.yaml` flag tells Helm to use the modified values from the file.
+
+   For example:
+
+   ```sh
+   helm upgrade my-release my-chart -f my-values.yaml
+   ```
+
+Helm will then perform an upgrade on the existing release, applying the changes you specified in the values file. This will update the StatefulSet's replica count as per your modification.
+
+----
+How to change the locback.xml in an artifactory pod ?
+1. First reduce the replica of the artifactory statefulset to 1 as mentioned in previous FAQ.
+2. backup the /opt/jfrog/artifactory/var/etc/artifactory/logback.xml within the pod itself.
+3. Then copy the logback.xml to  the host VM:
+kubectl cp my-namespace/my-pod:/app/data/file.txt ~/Downloads/
+Example:
+kubectl cp jfrog-platform-artifactory-0:/opt/jfrog/artifactory/var/etc/artifactory/logback.xml ~/test/logback.xml
+3. Make the necessary logback.xml  debug changes.
+4. Copy back the modified logback.xml back to the pod
+kubectl cp ~/test/logback.xml jfrog-platform-artifactory-0:/opt/jfrog/artifactory/var/etc/artifactory/logback.xml 
 
