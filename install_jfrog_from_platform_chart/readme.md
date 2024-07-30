@@ -1,13 +1,13 @@
-All the keys under `artifactory.` in 
-https://github.com/jfrog/charts/blob/master/stable/artifactory/values.yaml in the jfrog/artifactory chart 
-are in the `artifactory.artifactory.` when using the `jfrog/jfrog-platform` chart
+All the keys under "`artifactory.`" in 
+https://github.com/jfrog/charts/blob/master/stable/artifactory/values.yaml in the `jfrog/artifactory` chart 
+are in the "`artifactory.artifactory.`" when using the `jfrog/jfrog-platform` chart
 
 For example: `artifactory.replicaCount`  will be referenced as ,`artifactory.artifactory.replicaCount`
 
 To identify these parse the  https://github.com/jfrog/charts/blob/master/stable/artifactory/values.yaml
-with `artifactory.` in https://yaml.vercel.app/
+with "`artifactory.`" in https://yaml.vercel.app/
 
-In additon to that some of the `artifactory.artifactory.` keys can be identified using `artifactory.artifactory`
+In additon to that some of the "`artifactory.artifactory.`" keys can be identified using "`artifactory.artifactory`"
 in the https://github.com/jfrog/charts/blob/master/stable/jfrog-platform/values.yaml ( parse with https://yaml.vercel.app/)
 For example:
 ```
@@ -24,17 +24,23 @@ For example:
 }
 ```
 ---
-## Deploying artifactory via Helm
+## Deploying Artifactory via Helm using jfrog/jfrog-platform chart
 Note: 
 - All products include Distribution will be in the same namespace.
 - The `artifactory.artifactory.replicator` has been removed from the Helm chart since March or April 2024.
+
 So replicator is not used for Distribution.
-- you can leave jfrogURL without configuration. The platform chart should be able to connect between the products. it is used for internal communication, and it is not the related to the custom base url.
+- you can leave `jfrogURL` without configuration. The platform chart should be able to connect between the products. 
+
+It is used for internal communication, and it is not the related to the custom base url.
 - Fill in your own `imagePullSecrets` and `imageRegistry` in values/values-main.yaml
--  Pass your own ca.crt for artifactory if needed for ssl configuration. See prerequisite for ca.crt. [here](https://jfrog.com/help/r/jfrog-installation-setup-documentation/prerequisites-for-custom-tls-certificate) 
-      $ kubectl create secret tls my-cacert --cert=ca.crt --key=ca.private.key -n <namespace> 
+-  Pass your own ca.crt for artifactory if needed for ssl configuration. 
 
-
+See prerequisite for ca.crt. [here](https://jfrog.com/help/r/jfrog-installation-setup-documentation/prerequisites-for-custom-tls-certificate) 
+```
+kubectl create secret tls my-cacert --cert=ca.crt --key=ca.private.key -n <namespace> 
+```
+Here are the Steps to depoy Artifactory  using `jfrog/jfrog-platform` chart
 
 1. Switch to  the folder with your values.yaml files
 ```
@@ -81,6 +87,7 @@ kubectl create ns  $MY_NAMESPACE
 ```
 
 4. Create the secrets:
+
 a) Master and Join Keys:
 ```
 kubectl create secret generic masterkey-secret --from-literal=master-key=${MASTER_KEY} -n $MY_NAMESPACE
@@ -105,7 +112,6 @@ kubectl create secret generic artifactory-database-creds \
 If using Oracle database check the subsection on :
 `Configure Artifactory Helm Installation with an External Oracle Database`
 
----
 d) Admin user password:
 ```
 kubectl create secret generic art-creds --from-literal=bootstrap.creds='admin@*=password' -n $MY_NAMESPACE
@@ -115,18 +121,19 @@ e) Secret for GCP
 - [Google Cloud Storage Authentication Mechanism](https://jfrog.com/help/r/jfrog-installation-setup-documentation/google-cloud-storage-authentication-mechanism)
 - [Advanced Storage Options](https://jfrog.com/help/r/jfrog-installation-setup-documentation/advanced-storage-options) > "Google Storage"
 
-Note: IMPORTANT: The file must be called "gcp.credentials.json" because this is used later as the secret key!
+Note: IMPORTANT: The file must be called `"gcp.credentials.json"` because this is used later as the secret key!
 ```
 kubectl create secret generic artifactory-gcp-creds --from-file=./gcp.credentials.json -n $MY_NAMESPACE
 ```
-For GCP Storage:
+**For GCP Storage:**
 ```
 envsubst < ./custom-binarystore-gcp.tmpl > custom-binarystore.yaml
 
 kubectl apply -f custom-binarystore.yaml -n $MY_NAMESPACE
 ```
 
-For  awsS3V3 connection details. For IAM roles see [here](https://jfrog.com/help/r/artifactory-how-to-configure-an-aws-s3-object-store-using-an-iam-role-instead-of-an-iam-user)
+**For  awsS3V3 connection details.**
+ For IAM roles see [here](https://jfrog.com/help/r/artifactory-how-to-configure-an-aws-s3-object-store-using-an-iam-role-instead-of-an-iam-user)
 
 We recommend using the [S3 Direct Upload Template (Recommended)](https://jfrog.com/help/r/jfrog-installation-setup-documentation/s3-direct-upload-template-recommended)
 
@@ -141,7 +148,7 @@ python ../nest_yaml_with_comments.py artifactory-small.yaml \
 python ../nest_yaml_with_comments.py artifactory-small-extra-config.yaml \
  artifactory -o nested-artifactory-extra-config.yaml 
 ```
-Pick the https://github.com/jfrog/charts/blob/master/stable/distribution/sizing/distrubution-medium.yaml and and 
+Pick the https://github.com/jfrog/charts/blob/master/stable/distribution/sizing/distrubution-medium.yaml and  
 nest it under "distribution:"
 
 ```
@@ -177,8 +184,8 @@ helm  upgrade --install $MY_HELM_RELEASE \
 --namespace $MY_NAMESPACE jfrog/jfrog-platform  \
 --set global.versions.artifactory="${RT_VERSION}"
 ```
-Note:
-"splitServicesToContainers" should be true unless there is no other option. We are going to deprecate this flag in the future. The best practice is to run the services as separated containers.
+**Note:**
+`"splitServicesToContainers"` should be true unless there is no other option. We are going to deprecate this flag in the future. The best practice is to run the services as separated containers.
 
 ---
 ### Troubleshooting:
@@ -300,6 +307,7 @@ bash ./decode-secret.sh $MY_NAMESPACE masterkey-secret master-key
 ---
 To start over by deleting everything do the following:
 
+```
 helm uninstall $MY_HELM_RELEASE -n $MY_NAMESPACE
 kubectl delete ns  $MY_NAMESPACE
 kubectl create ns  $MY_NAMESPACE
@@ -329,4 +337,32 @@ kubectl get nodes -o wide --namespace $MY_NAMESPACE
 kubectl get svc --namespace $MY_NAMESPACE
 kubectl logs -f ps-jfrog-platform-release-artifactory-0 --all-containers=true --max-log-requests=10 --namespace ps-jfrog-platform
 kubectl logs -f ps-jfrog-platform-release-distribution-0 --all-containers=true --max-log-requests=10 --namespace ps-jfrog-platform
+
+kubectl describe pod ps-jfrog-platform-release-distribution-0 --namespace ps-jfrog-platform
+```
+
+List all StatefulSets in the $MY_NAMESPACE namespace:
+```
+kubectl get statefulsets -n $MY_NAMESPACE
+```
+View the YAML definition of the  StatefulSet:
+```
+kubectl get statefulset ps-jfrog-platform-release-artifactory -n $MY_NAMESPACE -o yaml  > statefulset.ps-jfrog-platform-release-artifactory.yaml
+
+kubectl describe statefulset ps-jfrog-platform-release-distribution -n $MY_NAMESPACE
+
+kubectl get statefulset  ps-jfrog-platform-release-distribution -n $MY_NAMESPACE -o yaml > statefulset.ps-jfrog-platform-release-distribution.yaml
+```
+List the Pods managed by the web StatefulSet:
+```
+kubectl get pods -l app=artifactory -n $MY_NAMESPACE
+
+NAME                                                           READY   STATUS    RESTARTS      AGE
+ps-jfrog-platform-release-artifactory-0                        0/7     Running   0             103s
+ps-jfrog-platform-release-artifactory-nginx-746c545c57-t2t9f   0/1     Running   1 (68s ago)   103s
+```
+```
+kubectl get pods -l app=distribution -n $MY_NAMESPACE
+```
 ---
+
