@@ -763,8 +763,8 @@ Here's how you can modify the replica count of a StatefulSet deployed via Helm:
 
 Helm will then perform an upgrade on the existing release, applying the changes you specified in the values file. This will update the StatefulSet's replica count as per your modification.
 
-----
-How to change the locback.xml in an artifactory pod ?
+---
+### How to change the logback.xml in an artifactory pod ?
 1. First reduce the replica of the artifactory statefulset to 1 as mentioned in previous FAQ.
 2. backup the /opt/jfrog/artifactory/var/etc/artifactory/logback.xml within the pod itself.
 3. Then copy the logback.xml to  the host VM:
@@ -775,3 +775,61 @@ kubectl cp jfrog-platform-artifactory-0:/opt/jfrog/artifactory/var/etc/artifacto
 4. Copy back the modified logback.xml back to the pod
 kubectl cp ~/test/logback.xml jfrog-platform-artifactory-0:/opt/jfrog/artifactory/var/etc/artifactory/logback.xml 
 
+---
+
+### How to export the helm chart for a specific Artifactory version ?
+
+To download a specific version of a Helm chart (e.g., `107.84.14`) to a `.tgz` file for use in an air-gapped environment, you can use the `helm pull` command with the specific version. Here’s how you can do it:
+
+1. **Add the JFrog Helm Repository**:
+   - Ensure you have added the JFrog Helm repository:
+     ```bash
+     helm repo add jfrog https://charts.jfrog.io
+     ```
+
+2. **Update the Helm Repository**:
+   - Update the repository to get the latest information:
+     ```bash
+     helm repo update
+     ```
+
+3. **Download the Specific Version of the Helm Chart**:
+   - Use the `helm pull` command to download the specific chart version. For example, to download version `107.84.14` of the `artifactory` chart:
+     ```bash
+     helm pull jfrog/jfrog-platform --version 107.84.14
+     helm pull jfrog/artifactory --version 107.84.14
+     ```
+This will create a `artifactory-107.84.14.tgz` file in the current folder.
+4. **Transfer the `.tgz` File to the Air-Gapped Environment**:
+   - The `helm pull` command will create a `.tgz` file for the Helm chart. Transfer this file to your air-gapped environment using a USB drive or other suitable methods.
+
+5. **Install the Helm Chart in the Air-Gapped Environment**:
+   - Copy the `.tgz` file to a location accessible by your air-gapped environment.
+   - Run the following command to install the Helm chart from the file:
+     ```bash
+     helm install <release-name> <path-to-chart-file>.tgz
+     ```
+   - Replace `<release-name>` with a name for your Helm release and `<path-to-chart-file>` with the path to the `.tgz` file.
+
+### Example Commands
+Here’s the full set of commands you would run on a machine with internet access:
+
+```bash
+helm repo add jfrog https://charts.jfrog.io
+helm repo update
+helm pull jfrog/artifactory --version 107.84.14
+```
+
+This will produce a file named `artifactory-107.84.14.tgz`.
+
+### Transferring and Installing in Air-Gapped Environment
+
+1. **Transfer the `artifactory-107.84.14.tgz` File**:
+   - Copy the `artifactory-107.84.14.tgz` file to a USB drive or other transfer medium.
+
+2. **On the Air-Gapped Machine**:
+   ```bash
+   helm install my-artifactory ./artifactory-107.84.14.tgz
+   ```
+
+By following these steps, you should be able to download and install the specified version of the Helm chart in your air-gapped environment.
