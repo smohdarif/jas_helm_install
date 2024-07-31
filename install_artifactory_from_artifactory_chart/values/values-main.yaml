@@ -25,48 +25,7 @@ global:
   ## Chart.AppVersion for each product can be overidden using global.versions.<product>
   ## For example : For artifactory, using global.versions.artifactory
   ## Note: Order of preference is 1) global.versions 2) .Values.artifactory.image.tag 3) Chart.AppVersion
-  versions:
-#    artifactory: 7.84.14
-#    xray: 3.76.7
+  # versions:
+  #   artifactory: 7.84.14
+  #   xray: 3.76.7
 
-  database:
-  # If you are using external postgresql, set initDBCreation: false
-    initDBCreation: false
-
-## This Postgresql is used by all products , set postgresql.enabled: false, when you want to use external postgresql for all products
-postgresql:
-  enabled: false
-
-artifactory:
-  enabled: true
-
-## This Rabbitmq is used by Xray and Pipelines only, set rabbitmq.enabled: false, when Xray or Pipelines is not enabled
-rabbitmq:
-  enabled: false
-  
-## This Redis is used by pipelines only, set redis.enabled: false, when pipelines is not enabled
-redis:
-  enabled: false
-
-xray:
-  enabled: false
-
-distribution:
-  enabled: true
-  postgresql:
-    enabled: true
-  # distribution:
-  #   unifiedSecretInstallation: true
-  # database:
-  #   url: '{{ include "database.url" . }}'
-  #   user: distribution
-  #   password: distribution
-
-insight:
-  enabled: false
-
-pipelines:
-  enabled: false
-
-pdnServer:
-  enabled: false

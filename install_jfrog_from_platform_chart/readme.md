@@ -27,11 +27,18 @@ For example:
 ## Deploying Artifactory via Helm using jfrog/jfrog-platform chart
 Note: 
 - All products include Distribution will be in the same namespace.
+-  It is not recommended to use different databases for different charts. The JFrog platform chart is designed to work with a single database only. To install an external PostgreSQL database, you can use the Bitnami PostgreSQL chart. Then, deploy Artifactory and Distribution using their respective charts instead of the JFrog platform chart.
+
+To clarify, the JFrog Platform chart supports one of two options:
+1. All JFrog products work with the bundled PostgreSQL (`postgresql.enabled: true`), or
+2. All products work with external databases (each product can be connected to a different external database).
+
+The combination of using an external database for Artifactory and the embedded PostgreSQL for Distribution is not supported and will not be supported in the future.
 - The `artifactory.artifactory.replicator` has been removed from the Helm chart since March or April 2024.
 
 So replicator is not used for Distribution.
-- you can leave `jfrogURL` without configuration. The platform chart should be able to connect between the products. 
 
+- you can leave `jfrogURL` without configuration. The platform chart should be able to connect between the products. 
 It is used for internal communication, and it is not the related to the custom base url.
 - Fill in your own `imagePullSecrets` and `imageRegistry` in values/values-main.yaml
 -  Pass your own ca.crt for artifactory if needed for ssl configuration. 
@@ -40,7 +47,10 @@ See prerequisite for ca.crt. [here](https://jfrog.com/help/r/jfrog-installation-
 ```
 kubectl create secret tls my-cacert --cert=ca.crt --key=ca.private.key -n <namespace> 
 ```
-Here are the Steps to depoy Artifactory  using `jfrog/jfrog-platform` chart
+
+---
+
+### Here are the Steps to depoy Artifactory  using `jfrog/jfrog-platform` chart
 
 1. Switch to  the folder with your values.yaml files
 ```
@@ -168,6 +178,9 @@ python ../merge_yaml_with_comments.py ../values/values-main.yaml \
 helm repo update
 helm search repo jfrog-chart
 ```
+
+helm pull jfrog/artifactory --version 10.0.0
+
 7. First do a Dry run:
 ```
 helm  upgrade --install $MY_HELM_RELEASE \
@@ -353,7 +366,7 @@ kubectl describe statefulset ps-jfrog-platform-release-distribution -n $MY_NAMES
 
 kubectl get statefulset  ps-jfrog-platform-release-distribution -n $MY_NAMESPACE -o yaml > statefulset.ps-jfrog-platform-release-distribution.yaml
 ```
-List the Pods managed by the web StatefulSet:
+List the Pods managed by the artifactory StatefulSet:
 ```
 kubectl get pods -l app=artifactory -n $MY_NAMESPACE
 
@@ -361,6 +374,7 @@ NAME                                                           READY   STATUS   
 ps-jfrog-platform-release-artifactory-0                        0/7     Running   0             103s
 ps-jfrog-platform-release-artifactory-nginx-746c545c57-t2t9f   0/1     Running   1 (68s ago)   103s
 ```
+List the Pods managed by the distribution StatefulSet:
 ```
 kubectl get pods -l app=distribution -n $MY_NAMESPACE
 ```

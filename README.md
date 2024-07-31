@@ -186,7 +186,7 @@ echo ${JOIN_KEY}
 export JOIN_KEY=763d4bdf02ff4cc16d7c5cf2abeccf3f243b5557bf738ec5438fd55df0cec3cc
 
 export ADMIN_USERNAME=admin
-export ADMIN_PASSWORD=Test@123
+export ADMIN_PASSWORD=password
 
 export DB_SERVER=100.185.45.104
 
@@ -195,7 +195,7 @@ export RT_DATABASE_USER=artifactory
 export RT_DATABASE_PASSWORD=password
 export ARTIFACTORY_DB=sivas-helm-ha-db
 
-export MY_RABBITMQ_ADMIN_USER_PASSWORD=Test@123
+export MY_RABBITMQ_ADMIN_USER_PASSWORD=password
 export XRAY_DATABASE_USER=xray
 export XRAY_DATABASE_PASSWORD=password
 export XRAY_DB=xray

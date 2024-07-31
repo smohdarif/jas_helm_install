@@ -9,5 +9,7 @@
 /install_artifactory_and_xray.txt
 /values/suggest_to_dynata/
 /dtcc
-/install_jfrog_from_platform_chart/my_gcp_deployment/
 /install_jfrog_from_platform_chart/my_gcp_deployment
+/install_jfrog_from_platform_chart/mysteps
+/install_artifactory_from_artifactory_chart/mysteps
+/install_distribution_from_distribution_chart/mysteps
