@@ -26,6 +26,7 @@ helm pull jfrog/distribution --version 102.25.1
 ```
 
 This will download the chart as distribution-102.25.1.tgz
+
 5. First do a Dry run:
 ```
 helm upgrade --install $MY_DIST_HELM_RELEASE \

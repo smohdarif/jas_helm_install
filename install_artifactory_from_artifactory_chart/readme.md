@@ -148,6 +148,7 @@ helm search repo jfrog-chart
 helm pull jfrog/artifactory --version 107.84.14
 ```
 This will download the chart as artifactory-107.84.14.tgz
+
 7. First do a Dry run:
 ```
 helm upgrade --install $MY_HELM_RELEASE \
