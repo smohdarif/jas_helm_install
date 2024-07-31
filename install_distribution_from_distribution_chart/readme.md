@@ -6,9 +6,11 @@ cd /Users/sureshv/myCode/github-sv/jas_helm_install/install_distribution_from_di
 ```
 
 2. Set some more environment variables:
+```
 export DIST_VERSION=2.25.1
 export JFROG_URL="https://35.185.121.172" 
 export MY_DIST_HELM_RELEASE=distribution-release
+```
 
 3. Pick the Distribution sizing template from https://github.com/jfrog/charts/tree/master/stable/distribution/sizing .
 I used [distrubution-medium.yaml](https://github.com/jfrog/charts/blob/master/stable/distribution/sizing/distrubution-medium.yaml)
