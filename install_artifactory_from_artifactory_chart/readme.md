@@ -169,14 +169,15 @@ helm upgrade --install $MY_HELM_RELEASE \
 ---
 ### Check the node external IP , pod status and logs
 
+```
 kubectl get pods -o wide --namespace $MY_NAMESPACE
 kubectl get nodes -o wide --namespace $MY_NAMESPACE
 kubectl descrbe pod "${MY_HELM_RELEASE}-artifactory-0" --namespace $MY_NAMESPACE
 kubectl logs -f "${MY_HELM_RELEASE}-artifactory-0" --all-containers=true --max-log-requests=10 --namespace $MY_NAMESPACE
-
+```
 ---
 ### To uninstall and redeploy everything from the beginning:
-
+```
 helm uninstall $MY_HELM_RELEASE -n $MY_NAMESPACE
 
 helm uninstall $MY_DIST_HELM_RELEASE -n $MY_NAMESPACE
@@ -199,5 +200,5 @@ kubectl create secret generic art-creds --from-literal=bootstrap.creds='admin@*=
 kubectl create secret generic artifactory-gcp-creds --from-file=./gcp.credentials.json -n $MY_NAMESPACE
 
 kubectl apply -f custom-binarystore.yaml -n $MY_NAMESPACE
-
+```
 ---

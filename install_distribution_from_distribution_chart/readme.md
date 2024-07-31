@@ -50,19 +50,23 @@ helm upgrade --install $MY_DIST_HELM_RELEASE \
 ./distribution-102.25.1.tgz  
 ```
 ---
-### 
+### Check the node external IP , pod status and logs
+```
 kubectl logs -f ps-distribution-release-0 --all-containers=true --max-log-requests=10 --namespace ps-jfrog-platform
 kubectl describe pod ps-distribution-release-0 --namespace $MY_NAMESPACE
 kubectl get pods -o wide --namespace $MY_NAMESPACE
 kubectl get nodes -o wide --namespace $MY_NAMESPACE
-
+```
 ---
+### Troubleshooting:
+During Distribution startup if it cannot connect to the $JFROG_URL/access because of cert verify issue:
+
 ```
 2024-07-31T03:56:46.446Z [jfrou] [INFO ] [30b08b4b4ccb3f94] [join_executor.go:174          ] [main                ] [] - Cluster join: Retry 100: Access Service ping failed, will retry. Error: do secure: Get "https://35.185.121.172/access/api/v1/system/ping": tls: failed to verify certificate: x509: cannot validate certificate for 35.185.121.172 because it doesn't contain any IP SANs
 ```
 
-We checked your certificate and saw it was defined with a hostname.
-We pinged the hostname and saw it referred to a different IP .
+Upon reviewing your certificate, we noticed it was defined with a hostname. When we pinged the hostname, it pointed to a different IP address.
 
-We agreed you  would get the correct Cert, and check we can resolve the domain name in the cert.
+To resolve this issue, you will need to obtain the correct certificate and verify that the domain name specified in the certificate resolves correctly.
 
+---
